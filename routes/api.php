@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\ChatController\ChatControllerDestroy;
+use App\Http\Controllers\ChatController\ChatControllerIndex;
+use App\Http\Controllers\ChatController\ChatControllerShow;
+use App\Http\Controllers\ChatController\ChatControllerStore;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +18,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
+
+Route::get('conversations', ChatControllerIndex::class);
+Route::get('conversations/{id}', ChatControllerShow::class);
+Route::post('conversations', ChatControllerStore::class);
+Route::delete('conversations/{id}', ChatControllerDestroy::class);
