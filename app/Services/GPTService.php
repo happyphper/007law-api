@@ -55,11 +55,7 @@ class GPTService
         return [
             'model' => 'gpt-3.5-turbo',
             'messages' => $messages,
+            'stream' => true,
         ];
-    }
-
-    public function _request()
-    {
-
     }
 }
