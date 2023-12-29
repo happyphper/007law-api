@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Message whereUserId($value)
+ * @property int $status 状态:1待发送、2已发送
+ * @method static \Illuminate\Database\Eloquent\Builder|Message whereStatus($value)
  * @mixin \Eloquent
  */
 class Message extends Model

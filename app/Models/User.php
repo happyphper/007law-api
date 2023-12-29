@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use DateTimeInterface;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +15,6 @@ use Laravel\Sanctum\HasApiTokens;
  *
  * @property int $id
  * @property string $name
- * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property mixed $password
  * @property string|null $remember_token
@@ -35,6 +36,28 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
+ * @property string $phone
+ * @property string|null $avatar
+ * @property string $openid
+ * @property string $unionid
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereAvatar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereOpenid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUnionid($value)
+ * @property bool|null $has_chat
+ * @property string|null $chat_started_at
+ * @property int|null $chat_count
+ * @property string|null $chat_expired_at
+ * @property bool|null $has_ip
+ * @property string|null $ip_started_at
+ * @property string|null $ip_expired_at
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereChatCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereChatExpiredAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereChatStartedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereHasChat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereHasIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIpExpiredAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIpStartedAt($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable
@@ -46,11 +69,7 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    protected $guarded = ['id'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -70,5 +89,31 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'has_chat' => 'bool',
+        'has_ip' => 'bool',
     ];
+
+    /**
+     * 日期
+     *
+     * @var array|string[]
+     */
+    public array $dates = [
+        'chat_started_at',
+        'chat_expired_at',
+        'ip_started_at',
+        'ip_expired_at',
+    ];
+
+    public function serializeDate(DateTimeInterface $date): string
+    {
+        return $date->format('Y-m-d');
+    }
+
+    protected function avatar(): Attribute
+    {
+        return Attribute::make(
+            get: fn(string $value) => str_contains($value, 'http') ? $value : config('app.url') . \Storage::disk('local')->url($value),
+        );
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,11 +23,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Conversation whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Conversation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Conversation whereUserId($value)
+ * @property string $title
+ * @method static \Illuminate\Database\Eloquent\Builder|Conversation whereTitle($value)
  * @mixin \Eloquent
  */
 class Conversation extends Model
 {
-    use HasFactory;
+    use HasFactory, SerializeDate;
 
     protected $guarded = ['id'];
 

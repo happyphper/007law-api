@@ -9,7 +9,7 @@ class ChatControllerShow
 {
     public function __invoke($id, Request $request): \Illuminate\Http\JsonResponse
     {
-        $userId = 1;
+        $userId = auth()->id();
 
         $conversation = Conversation::where('user_id', $userId)->where('id', $id)->firstOrFail();
 

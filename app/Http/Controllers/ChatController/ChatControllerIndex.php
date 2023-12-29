@@ -7,12 +7,11 @@ use Illuminate\Http\Request;
 
 class ChatControllerIndex
 {
-
     public function __invoke(Request $request): \Illuminate\Http\JsonResponse
     {
-        $userId = 1;
+        $userId = auth()->id();
 
-        $conversations = Conversation::where('user_id', $userId)->get();
+        $conversations = Conversation::where('user_id', $userId)->orderByDesc('updated_at')->get();
 
         return response()->json([
             'code' => 0,

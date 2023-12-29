@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\ChatController;
 
+use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\User;
 use App\Packages\GPT\ChatGPT;
 use App\Packages\GPT\Res;
-use App\Services\GPTService;
 use Illuminate\Http\Request;
 
-class ChatControllerStore
+class ChatControllerStore extends Controller
 {
     public function __construct()
     {
@@ -37,7 +38,7 @@ class ChatControllerStore
         header('X-Accel-Buffering: no');
     }
 
-    public function __invoke(Request $request): void
+    public function __invoke(Request $request)
     {
         $question = str_ireplace('{[$add$]}', '+', $request->query('q', ''));
         if (empty($question)) {
@@ -45,7 +46,18 @@ class ChatControllerStore
             exit();
         }
 
-        $userId = 1;
+        $user = auth()->user();
+        /* @var User $user */
+        if ($user->has_chat && now()->gt($user->chat_expired_at)) {
+            Res::end('订阅已过期');
+            exit();
+        }
+        if (!$user->has_chat && $user->chat_count <= 0) {
+            Res::end('免费额度已用完');
+            exit();
+        }
+
+        $userId = auth()->id();
 
         $title = mb_substr($question, 0, 20);
 
@@ -67,6 +79,8 @@ class ChatControllerStore
 
         // 开始提问
         $chat->qa(['messages' => $messages]);
+
+        return $this->success();
     }
 
     /**
@@ -81,14 +95,22 @@ class ChatControllerStore
         $messages = Message::query()->where('conversation_id', $conversation->id)->get(['role', 'content'])->toArray();
         if (!$messages) {
             // 不存在历史消息
-            $service = new GPTService();
-            $presetMessage = ['role' => 'system', 'content' => $service->presetContent];
+            $presetMessage = ['role' => 'system', 'content' => config('gpt.preset_content')];
             $conversation->messages()->create($presetMessage);
             $messages = [$presetMessage];
         }
 
         $conversation->messages()->create($newMessage);
         $messages[] = $newMessage;
+
+        $conversation->updated_at = now();
+        $conversation->save();
+
+        $user = auth()->user();
+
+        /* User $user */
+        $user->decrement('chat_count', 1);
+
         return $messages;
     }
 }

@@ -4,7 +4,6 @@ use App\Http\Controllers\ChatController\ChatControllerDestroy;
 use App\Http\Controllers\ChatController\ChatControllerIndex;
 use App\Http\Controllers\ChatController\ChatControllerShow;
 use App\Http\Controllers\ChatController\ChatControllerStore;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,8 +21,16 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
+Route::get('auth/code', \App\Http\Controllers\Mini\Code::class);
+Route::post('auth/register', \App\Http\Controllers\Mini\Register::class);
+Route::get('services', \App\Http\Controllers\Service\Index::class);
+Route::get('questions', \App\Http\Controllers\Question\QuestionIndex::class);
 
-Route::get('conversations', ChatControllerIndex::class);
-Route::get('conversations/{id}', ChatControllerShow::class);
-Route::post('conversations', ChatControllerStore::class);
-Route::delete('conversations/{id}', ChatControllerDestroy::class);
+Route::middleware('auth:sanctum')->group(function(){
+    Route::get('conversations', ChatControllerIndex::class);
+    Route::get('conversations/{id}', ChatControllerShow::class);
+    Route::post('conversations', ChatControllerStore::class);
+    Route::delete('conversations/{id}', ChatControllerDestroy::class);
+    Route::post('user/update', \App\Http\Controllers\User\Update::class);
+    Route::post('user/avatar', \App\Http\Controllers\User\Avatar::class);
+});

@@ -14,9 +14,20 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('phone')->unique();
+            $table->string('password')->nullable();
+            $table->string('avatar')->nullable();
+            $table->string('openid')->unique();
+            $table->string('unionid')->unique();
+            $table->tinyInteger('has_chat')->default(false)->comment('是否已订阅聊天服务');
+            $table->timestamp('chat_started_at')->nullable()->comment('何时开始');
+            $table->timestamp('chat_expired_at')->nullable()->comment('何时过期');
+            $table->tinyInteger('chat_count')->default(20)->comment('免费次数');
+            $table->tinyInteger('has_ip')->default(0)->comment('是否已订阅IP服务');
+            $table->timestamp('ip_started_at')->nullable()->comment('何时开始');
+            $table->timestamp('ip_expired_at')->nullable()->comment('何时过期');
+            $table->string('education')->nullable()->comment('教育经历');
+            $table->string('company')->nullable()->comment('公司名称');
             $table->rememberToken();
             $table->timestamps();
         });
