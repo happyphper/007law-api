@@ -33,4 +33,5 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::delete('conversations/{id}', ChatControllerDestroy::class);
     Route::post('user/update', \App\Http\Controllers\User\Update::class);
     Route::post('user/avatar', \App\Http\Controllers\User\Avatar::class);
+    Route::post('doc/content', \App\Http\Controllers\ChatController\ChatControllerUpload::class);
 });
