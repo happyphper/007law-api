@@ -25,6 +25,7 @@ Route::get('auth/code', \App\Http\Controllers\Mini\Code::class);
 Route::post('auth/register', \App\Http\Controllers\Mini\Register::class);
 Route::get('services', \App\Http\Controllers\Service\Index::class);
 Route::get('questions', \App\Http\Controllers\Question\QuestionIndex::class);
+Route::get('doc/test', \App\Http\Controllers\ChatController\ChatControllerUpload::class);
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('conversations', ChatControllerIndex::class);

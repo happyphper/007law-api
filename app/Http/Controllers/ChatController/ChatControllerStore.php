@@ -40,7 +40,7 @@ class ChatControllerStore extends Controller
 
     public function __invoke(Request $request)
     {
-        $question = str_ireplace('{[$add$]}', '+', $request->query('q', ''));
+        $question = $request->get('q', '');
         if (empty($question)) {
             Res::end('问题不能为空');
             exit();
@@ -61,14 +61,14 @@ class ChatControllerStore extends Controller
 
         $title = mb_substr($question, 0, 20);
 
-        $conversation = Conversation::query()->firstOrCreate(['user_id' => $userId, 'id' => $request->query('cid')], ['title' => $title]);
+        $conversation = Conversation::query()->firstOrCreate(['user_id' => $userId, 'id' => $request->get('cid')], ['title' => $title]);
 
         $messages = $this->handleMessages($conversation, $question);
 
         Res::start($title, $conversation->id);
 
         // 此处需要填入 openai 的 api key
-        $chat = new ChatGPT(['api_key' => config('gpt.gpt3_key'), 'conversation' => $conversation]);
+        $chat = new ChatGPT(['api_key' => config('gpt.gpt4_key'), 'conversation' => $conversation]);
 
         // 如果把下面三行注释掉，则不会启用敏感词检测
         // 特别注意，这里特意用乱码字符串文件名是为了防止他人下载敏感词文件，请你部署后也自己改一个别的乱码文件名
@@ -76,7 +76,6 @@ class ChatControllerStore extends Controller
 //            'words_file' => './sensitive_words_sdfdsfvdfs5v56v5dfvdf.txt',
 //        ]);
 //        $chat->set_dfa($dfa);
-
         // 开始提问
         $chat->qa(['messages' => $messages]);
 
