@@ -5,6 +5,7 @@ namespace App\Http\Controllers\ChatController;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\Setting;
 use App\Models\User;
 use App\Packages\GPT\ChatGPT;
 use App\Packages\GPT\Res;
@@ -63,12 +64,22 @@ class ChatControllerStore extends Controller
 
         $conversation = Conversation::query()->firstOrCreate(['user_id' => $userId, 'id' => $request->get('cid')], ['title' => $title]);
 
-        $messages = $this->handleMessages($conversation, $question);
+        $setting = Setting::first()->content;
+        $preset = $setting['preset'] ?? config('gpt.preset_content');
+        $messages = $this->handleMessages($conversation, $question, $preset);
 
         Res::start($title, $conversation->id);
 
         // 此处需要填入 openai 的 api key
-        $chat = new ChatGPT(['api_key' => config('gpt.gpt4_key'), 'conversation' => $conversation]);
+        if ($setting['model'] === 'gpt4') {
+            $model = 'gpt-4-1106-preview';
+            $key = config('gpt.gpt4_key');
+        } else {
+            $model = 'gpt-3.5-turbo-1106';
+            $key = config('gpt.gpt3_key');
+        }
+
+        $chat = new ChatGPT(['model' => $model, 'api_key' => $key, 'conversation' => $conversation]);
 
         // 如果把下面三行注释掉，则不会启用敏感词检测
         // 特别注意，这里特意用乱码字符串文件名是为了防止他人下载敏感词文件，请你部署后也自己改一个别的乱码文件名
@@ -87,14 +98,14 @@ class ChatControllerStore extends Controller
      * @param string $content
      * @return array[]
      */
-    public function handleMessages(Conversation $conversation, string $content): array
+    public function handleMessages(Conversation $conversation, string $content, string $preset): array
     {
         $newMessage = ['role' => 'user', 'content' => $content];
 
         $messages = Message::query()->where('conversation_id', $conversation->id)->get(['role', 'content'])->toArray();
         if (!$messages) {
             // 不存在历史消息
-            $presetMessage = ['role' => 'system', 'content' => config('gpt.preset_content')];
+            $presetMessage = ['role' => 'system', 'content' => $preset];
             $conversation->messages()->create($presetMessage);
             $messages = [$presetMessage];
         }

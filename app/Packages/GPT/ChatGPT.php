@@ -11,6 +11,7 @@ class ChatGPT
 
     private string $apiUrl = 'https://key.wenwen-ai.com/v1/chat/completions';
     private string $apiKey = '';
+    private string $model = '';
     private StreamHandler $streamHandler;
     private ?DFA $dfa = NULL;
     private bool $checkSensitive = false;
@@ -20,6 +21,8 @@ class ChatGPT
     public function __construct($params)
     {
         $this->apiKey = $params['api_key'] ?? '';
+
+        $this->model = $params['model'] ?? '';
 
         $this->conversation = $params['conversation'];
     }
@@ -54,7 +57,7 @@ class ChatGPT
 //        }
 
         $json = json_encode([
-            'model' => 'gpt-4',
+            'model' => $this->model,
             'messages' => $messages,
             'temperature' => 0.6,
             'stream' => true,
