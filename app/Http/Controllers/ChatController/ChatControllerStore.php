@@ -118,8 +118,8 @@ class ChatControllerStore extends Controller
 
         $user = auth()->user();
 
-        /* User $user */
-        $user->decrement('chat_count', 1);
+        /* @var User $user */
+        $user->where('has_chat', false)->decrement('chat_count', 1);
 
         return $messages;
     }

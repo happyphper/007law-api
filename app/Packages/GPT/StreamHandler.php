@@ -3,6 +3,7 @@
 namespace App\Packages\GPT;
 
 use App\Models\Conversation;
+use App\Models\User;
 
 class StreamHandler
 {
@@ -23,10 +24,14 @@ class StreamHandler
     {
         file_put_contents(storage_path('logs/gpt.' . $this->qmd5 . '.log'), $this->counter . '完整内容==' . $this->fulltext . PHP_EOL . '===============' . PHP_EOL, FILE_APPEND);
 
-        $this->conversation->messages()->create([
-            'role' => 'assistant',
-            'content' => $this->fulltext,
-        ]);
+        if ($this->fulltext) {
+            $this->conversation->messages()->create([
+                'role' => 'assistant',
+                'content' => $this->fulltext,
+            ]);
+        } else {
+            User::where('id', $this->conversation->user_id)->where('has_chat', false)->increment('chat_count', 1);
+        }
 
         Res::end('Connection Closed', $this->conversation->id);
     }
