@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Question;
 
 use App\Http\Controllers\Controller;
-use App\Models\Setting;
+use App\Models\Question;
 
 class QuestionIndex extends Controller
 {
     public function __invoke(): \Illuminate\Http\JsonResponse
     {
-        $questions = Setting::where('title', Setting::TITLE_QUESTION)->take(4)->first();
+        $questions = Question::orderByDesc('sort')->pluck('title');
 
-        return $this->success($questions->content);
+        return $this->success($questions->toArray());
     }
 }

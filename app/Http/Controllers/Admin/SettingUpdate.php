@@ -8,9 +8,10 @@ use App\Models\Setting;
 
 class SettingUpdate extends Controller
 {
-    public function __invoke(Setting $setting, AdminSettingRequest $request): \Illuminate\Http\JsonResponse
+    public function __invoke(AdminSettingRequest $request): \Illuminate\Http\JsonResponse
     {
-        $setting->content = $request->input('content');
+        $setting = Setting::first();
+        $setting->content = $request->all();
         $setting->save();
 
         return $this->success();

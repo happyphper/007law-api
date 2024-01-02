@@ -58,6 +58,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereHasIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIpExpiredAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereIpStartedAt($value)
+ * @property string|null $education 教育经历
+ * @property string|null $company 公司名称
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereCompany($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEducation($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable

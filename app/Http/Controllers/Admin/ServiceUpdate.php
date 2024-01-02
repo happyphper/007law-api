@@ -8,8 +8,10 @@ use App\Models\Service;
 
 class ServiceUpdate extends Controller
 {
-    public function __invoke(Service $service, AdminServiceUpdateRequest $request): \Illuminate\Http\JsonResponse
+    public function __invoke($service, AdminServiceUpdateRequest $request): \Illuminate\Http\JsonResponse
     {
+        $service = Service::findOrFail($service);
+
         $service->fill($request->all());
         $service->save();
 

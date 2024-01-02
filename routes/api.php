@@ -26,6 +26,8 @@ Route::post('auth/register', \App\Http\Controllers\Mini\Register::class);
 Route::get('services', \App\Http\Controllers\Service\Index::class);
 Route::get('questions', \App\Http\Controllers\Question\QuestionIndex::class);
 Route::get('doc/test', \App\Http\Controllers\ChatController\ChatControllerUpload::class);
+Route::get('contracts', \App\Http\Controllers\ContractIndex::class);
+Route::get('contracts/{contract}', \App\Http\Controllers\ContractView::class);
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('conversations', ChatControllerIndex::class);

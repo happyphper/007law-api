@@ -10,8 +10,8 @@ class SettingIndex extends Controller
 {
     public function __invoke(Request $request): \Illuminate\Http\JsonResponse
     {
-        $data = Setting::get();
+        $data = Setting::first();
 
-        return $this->success($data);
+        return $this->success($data->content);
     }
 }

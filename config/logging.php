@@ -126,6 +126,17 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'sql' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/sql.log'),
+            'level' => 'debug',
+            'days' => 14,
+            'tap' => [
+                \App\Logging\SqlFormatter::class,
+            ],
+            'permission' => 0777, // 指定权限，例如 0644 表示读写权限
+        ],
     ],
 
 ];

@@ -22,7 +22,8 @@ class AdminSettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'content' => 'required|min:6',
+            'model' => 'required',
+            'preset' => 'required|min:6',
         ];
     }
 }

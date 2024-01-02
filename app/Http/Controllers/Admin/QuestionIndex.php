@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Service;
+use App\Models\Question;
+use Illuminate\Http\Request;
 
-class ServiceIndex extends Controller
+class QuestionIndex extends Controller
 {
-    public function __invoke()
+    public function __invoke(Request $request)
     {
-        $paginator = Service::orderByDesc('id')->paginate();
+        $paginator = Question::orderByDesc('sort')->paginate();
 
         $data = $paginator->items();
-
 
         $meta = [
             'page' => $paginator->currentPage(),

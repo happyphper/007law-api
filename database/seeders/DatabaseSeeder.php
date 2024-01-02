@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Admin;
+use App\Models\Question;
 use App\Models\Service;
 use App\Models\Setting;
 use Illuminate\Database\Seeder;
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('123456'),
         ]);
 
+        // 服务
         Service::create([
             'id' => 1,
             'title' => '智能咨询',
@@ -72,15 +74,19 @@ EOF,
             'price' => 1888,
         ]);
 
+        // 配置
         Setting::create([
-            'title' => Setting::TITLE_QUESTION,
+            'title' => 'GPT配置',
             'content' => [
-                '被裁员了如何申请赔偿啊实打实大师大师大师大苏打手打湿哒哒',
-                '社保断缴如何维护权益',
-                '生成一份员工入职合同',
-                '公司不给上社保如何维权'
+                'model' => 'gpt4',
+                'preset' => config('gpt.preset_content'),
             ],
         ]);
 
+        // 问题
+        Question::create(['title' => '被裁员如何申请赔偿？']);
+        Question::create(['title' => '工伤后未签订合同，如何申请赔偿']);
+        Question::create(['title' => '公司断缴社保如何维权']);
+        Question::create(['title' => '公司不给上社保是否违法']);
     }
 }

@@ -29,6 +29,6 @@ class Controller extends BaseController
             'msg' => 'ok',
             'data' => $data,
             'meta' => $meta,
-        ]);
+        ], 200, [], JSON_UNESCAPED_UNICODE);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,11 +28,15 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Service whereSubtitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Service whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Service whereUpdatedAt($value)
+ * @property int $type
+ * @method static \Illuminate\Database\Eloquent\Builder|Service whereType($value)
  * @mixin \Eloquent
  */
 class Service extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
 
     const TYPE_CHAT = 1;
     const TYPE_IP = 2;
@@ -42,5 +47,13 @@ class Service extends Model
             self::TYPE_CHAT => '智能咨询',
             self::TYPE_IP => '短视频IP打造',
         ];
+    }
+
+    protected function cover(): Attribute
+    {
+        return Attribute::make(
+            get: fn(string $value) => str_contains($value, 'http') ? $value : config('app.url') . \Storage::disk('local')->url($value),
+            set: fn(string $value) => str_contains($value, 'http') ? str_replace(config('app.url') . '/storage', '', $value) : $value,
+        );
     }
 }

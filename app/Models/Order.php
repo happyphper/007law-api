@@ -29,6 +29,10 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereUserId($value)
+ * @property string $description
+ * @property string $response
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereResponse($value)
  * @mixin \Eloquent
  */
 class Order extends Model
