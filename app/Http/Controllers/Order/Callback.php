@@ -19,7 +19,6 @@ class Callback extends Controller
         $service = new PayService();
 
         $outTradeNo = $service->handleNotification();
-
         $data = $service->search($outTradeNo);
         if ($data['trade_state'] !== 'SUCCESS') {
             return $service->callbackResponse();

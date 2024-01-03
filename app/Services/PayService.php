@@ -69,25 +69,13 @@ class PayService
         return $this->app->getUtils()->buildMiniAppConfig($prepayId, $this->appId);
     }
 
-    public function handleNotification()
+    public function handleNotification(): string
     {
         $server = $this->app->getServer();
 
-        $outTradeNo = '';
+        $message = $server->getRequestMessage();
 
-        $payerOpenId = '';
-
-        $server->handlePaid(function (Message $message, \Closure $next) use ($outTradeNo, $payerOpenId) {
-            $outTradeNo = $message->out_trade_no;
-
-            $payerOpenId = $message->payer['openid'];
-
-            return $next($message);
-        });
-
-        $this->transaction($outTradeNo);
-
-        return $outTradeNo;
+        return $message->out_trade_no;
     }
 
     public function callbackResponse()
