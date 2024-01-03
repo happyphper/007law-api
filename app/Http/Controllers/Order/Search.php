@@ -10,19 +10,30 @@ use App\Services\PayService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class Callback extends Controller
+class Search extends Controller
 {
-    public function __invoke(Request $request): \Psr\Http\Message\ResponseInterface
+    public function __invoke(Request $request): \Illuminate\Http\JsonResponse
     {
-        \Log::debug("PayCallback", $request->all());
+        $userId = auth()->id();
 
+        $order = Order::where('user_id', $userId)
+            ->where('service_id', $request->get('id'))
+            ->first();
+
+        if ($order->status === Order::STATUS_PAID) {
+            $user = User::find($userId);
+
+            return $this->success($user->toArray());
+        }
+
+        // 查询
         $service = new PayService();
+        $outTradeNo = $order->out_trade_no;
+        $data = $service->search($order->out_trade_no);
 
-        $outTradeNo = $service->handleNotification();
-
-        $data = $service->search($outTradeNo);
         if ($data['trade_state'] !== 'SUCCESS') {
-            return $service->callbackResponse();
+            $user = User::find($userId);
+            return $this->success($user->toArray());
         }
 
         \DB::transaction(function () use ($data, $outTradeNo) {
@@ -40,7 +51,7 @@ class Callback extends Controller
             $user = User::where('id', $order->user_id)->first();
             if ($order->service_id === Service::TYPE_CHAT) {
                 if ($user->has_chat) {
-                    $user->chat_expired_at = $user->chat_expired_at->addYear()->addDay();
+                    $user->chat_expired_at = Carbon::parse($user->chat_expired_at)->addYear()->addDay();
                 } else {
                     $user->has_chat = true;
                     $user->chat_started_at = now();
@@ -48,7 +59,7 @@ class Callback extends Controller
                 }
             } else {
                 if ($user->has_ip) {
-                    $user->ip_expired_at = $user->ip_expired_at->addYear()->addDay();
+                    $user->ip_expired_at = Carbon::parse($user->ip_expired_at)->addYear()->addDay();
                 } else {
                     $user->has_ip = true;
                     $user->ip_started_at = now();
@@ -58,6 +69,7 @@ class Callback extends Controller
             $user->save();
         });
 
-        return $service->callbackResponse();
+        $user = User::find($userId);
+        return $this->success($user->toArray());
     }
 }

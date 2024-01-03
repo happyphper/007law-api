@@ -40,4 +40,5 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('user/avatar', \App\Http\Controllers\User\Avatar::class);
     Route::post('doc/content', \App\Http\Controllers\ChatController\ChatControllerUpload::class);
     Route::post('orders/place', \App\Http\Controllers\Order\Place::class);
+    Route::get('orders/search', \App\Http\Controllers\Order\Search::class);
 });
