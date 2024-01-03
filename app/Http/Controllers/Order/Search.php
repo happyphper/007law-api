@@ -18,6 +18,7 @@ class Search extends Controller
 
         $order = Order::where('user_id', $userId)
             ->where('service_id', $request->get('id'))
+            ->orderByDesc('id')
             ->first();
 
         if ($order->status === Order::STATUS_PAID) {
