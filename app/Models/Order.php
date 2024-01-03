@@ -33,11 +33,15 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $response
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereResponse($value)
+ * @property string|null $paid_amount
+ * @method static \Illuminate\Database\Eloquent\Builder|Order wherePaidAmount($value)
  * @mixin \Eloquent
  */
 class Order extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
 
     const STATUS_WAIT = 1;
     const STATUS_PAID = 2;

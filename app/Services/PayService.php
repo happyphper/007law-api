@@ -6,6 +6,7 @@ use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\Pay\Application;
 use EasyWeChat\Pay\Message;
 use Exception;
+use Nyholm\Psr7\Response;
 
 class PayService
 {
@@ -13,6 +14,10 @@ class PayService
      * @var Application EastWechat 微信支付实例
      */
     public readonly Application $app;
+    /**
+     * @var string
+     */
+    public string $appId;
 
     /**
      * @var string 商户ID
@@ -27,27 +32,41 @@ class PayService
     {
         $setting = config('wechat.pay');
 
+        $this->appId = config('wechat.app_id');
+
         $this->mchid = $setting['mch_id'];
 
         $this->app = new Application($setting);
     }
 
+    /**
+     * 预支付
+     *
+     * @param array $data
+     * @return mixed
+     * @throws InvalidArgumentException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     */
     public function prepay(array $data)
     {
         $url = "/v3/pay/transactions/jsapi";
 
-        $api = $this->app->getClient();
+        $response = $this->app->getClient()->postJson($url, $data);
 
-        $response = $api->postJson($url, $data);
+        return $response->toArray(false)['prepay_id'];
+    }
 
-        try{
-            $this->app->getValidator()->validate($response->toPsrResponse());
-            // 验证通过
-            return $response;
-        } catch(Exception $e){
-            // 验证失败
-            return "";
-        }
+    /**
+     * 预支付参数
+     *
+     * @param $prepayId
+     * @return mixed[]
+     * @throws InvalidArgumentException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     */
+    public function prepayParameters($prepayId)
+    {
+        return $this->app->getUtils()->buildMiniAppConfig($prepayId, $this->appId);
     }
 
     public function handleNotification()
@@ -68,11 +87,23 @@ class PayService
 
         $this->transaction($outTradeNo);
 
-        // TODO 校验支付情况
-        // 支付成功
+        return $outTradeNo;
+    }
 
+    public function callbackResponse()
+    {
+        return $this->app->getServer()->serve();
+    }
 
-        return $server->serve();
+    public function search(string $outTradeNo)
+    {
+        $response = $this->app->getClient()->get("v3/pay/transactions/out-trade-no/{$outTradeNo}", [
+            'query' => [
+                'mchid' => $this->app->getMerchant()->getMerchantId()
+            ]
+        ]);
+
+        return $response->toArray();
     }
 
     public function transaction(string $outTradeNo)
@@ -83,11 +114,11 @@ class PayService
 
         $response = $api->get($url);
 
-        try{
+        try {
             $this->app->getValidator()->validate($response->toPsrResponse());
             // 验证通过
             return $response;
-        } catch(Exception $e){
+        } catch (Exception $e) {
             // 验证失败
             return "";
         }

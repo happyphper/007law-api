@@ -29,6 +29,8 @@ Route::get('doc/test', \App\Http\Controllers\ChatController\ChatControllerUpload
 Route::get('contracts', \App\Http\Controllers\ContractIndex::class);
 Route::get('contracts/{contract}', \App\Http\Controllers\ContractView::class);
 
+Route::any('orders/callback', \App\Http\Controllers\Order\Callback::class);
+
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('conversations', ChatControllerIndex::class);
     Route::get('conversations/{id}', ChatControllerShow::class);
@@ -37,4 +39,5 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('user/update', \App\Http\Controllers\User\Update::class);
     Route::post('user/avatar', \App\Http\Controllers\User\Avatar::class);
     Route::post('doc/content', \App\Http\Controllers\ChatController\ChatControllerUpload::class);
+    Route::post('orders/place', \App\Http\Controllers\Order\Place::class);
 });

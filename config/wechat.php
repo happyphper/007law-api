@@ -10,22 +10,23 @@ return [
     'aes_key' => '',
 
     'pay' => [
-        'mch_id' => 1538637291,
+        'mch_id' => env('WECHAT_PAY_MCH_ID', ''),
         // v3 API 秘钥
-        'secret_key' => 'f1ee0dd096a91aJZ10e6c2f359OdL274',
+        'secret_key' => env('WECHAT_PAY_SECRET_V3', ''),
 
         // 商户证书
-        'private_key' => __DIR__ . '/certs/apiclient_key.pem',
-        'certificate' => __DIR__ . '/certs/apiclient_cert.pem',
+        'private_key' => storage_path('certs/apiclient_key.pem'),
+
+        'certificate' => storage_path('certs/apiclient_cert.pem'),
 
         // v2 API 秘钥
-        'v2_secret_key' => '26db3e15cfedb44abfbb5fe94fxxxxx',
+        'v2_secret_key' => '',
 
         // 平台证书：微信支付 APIv3 平台证书，需要使用工具下载
         // 下载工具：https://github.com/wechatpay-apiv3/CertificateDownloader
         'platform_certs' => [
             // 请使用绝对路径
-            // '/path/to/wechatpay/cert.pem',
+            storage_path('certs/wechatpay_145CB30C8C38D775CFE8A82FE1F9BD23BDCAEF76.pem')
         ],
 
         /**
@@ -39,3 +40,5 @@ return [
         ],
     ],
 ];
+
+

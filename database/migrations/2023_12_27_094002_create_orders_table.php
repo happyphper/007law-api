@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id');
             $table->integer('service_id');
-            $table->tinyInteger('status');
+            $table->tinyInteger('status')->default(1);
             $table->string('out_trade_no');
             $table->decimal('amount');
             $table->string('description');
-            $table->string('paid_at');
-            $table->text('response');
+            $table->timestamp('paid_at')->nullable();
+            $table->decimal('paid_amount')->nullable();
+            $table->text('response')->nullable();
+            $table->string('prepay_id')->nullable();
             $table->timestamps();
         });
     }

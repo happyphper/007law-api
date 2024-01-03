@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereUrl($value)
  * @property string $file
  * @method static \Illuminate\Database\Eloquent\Builder|Contract whereFile($value)
+ * @property int $view
+ * @method static \Illuminate\Database\Eloquent\Builder|Contract whereView($value)
  * @mixin \Eloquent
  */
 class Contract extends Model
