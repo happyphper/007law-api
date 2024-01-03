@@ -47,7 +47,7 @@ class Place extends Controller
                 'mchid' => config('wechat.pay.mch_id'),
                 'description' => $order->description,
                 'out_trade_no' => $order->out_trade_no,
-                'notify_url' => 'https://2bb6-117-129-2-196.ngrok-free.app/api/',
+                'notify_url' => config('app.url') . '/api/orders/callback',
                 'amount' => [
                     'total' => intval($order->amount * 100),
                 ],
