@@ -95,6 +95,10 @@ class User extends Authenticatable
         'password' => 'hashed',
         'has_chat' => 'bool',
         'has_ip' => 'bool',
+        'chat_started_at' => 'date:Y-m-d',
+        'chat_expired_at' => 'date:Y-m-d',
+        'ip_started_at' => 'date:Y-m-d',
+        'ip_expired_at' => 'date:Y-m-d',
     ];
 
     /**

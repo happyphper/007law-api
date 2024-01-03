@@ -40,7 +40,7 @@ class Callback extends Controller
             $user = User::where('id', $order->user_id)->first();
             if ($order->service_id === Service::TYPE_CHAT) {
                 if ($user->has_chat) {
-                    $user->chat_expired_at = $user->chat_expired_at->addYear()->addDay();
+                    $user->chat_expired_at = $user->chat_expired_at->addYear();
                 } else {
                     $user->has_chat = true;
                     $user->chat_started_at = now();
@@ -48,7 +48,7 @@ class Callback extends Controller
                 }
             } else {
                 if ($user->has_ip) {
-                    $user->ip_expired_at = $user->ip_expired_at->addYear()->addDay();
+                    $user->ip_expired_at = $user->ip_expired_at->addYear();
                 } else {
                     $user->has_ip = true;
                     $user->ip_started_at = now();
