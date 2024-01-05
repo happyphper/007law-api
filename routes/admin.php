@@ -15,10 +15,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('orders', \App\Http\Controllers\Admin\OrderIndex::class);
 
-    Route::get('services', \App\Http\Controllers\Admin\ServiceIndex::class);
-
     Route::get('service-types', \App\Http\Controllers\Admin\ServiceTypes::class);
-
+    Route::get('services', \App\Http\Controllers\Admin\ServiceIndex::class);
+    Route::post('services', \App\Http\Controllers\Admin\ServiceStore::class);
+    Route::post('services/upload', \App\Http\Controllers\Admin\ServiceUpload::class);
     Route::put('services/{service}', \App\Http\Controllers\Admin\ServiceUpdate::class);
 
     Route::get('settings', \App\Http\Controllers\Admin\SettingIndex::class);

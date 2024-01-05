@@ -39,7 +39,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory, SerializeDate;
 
     protected $guarded = ['id'];
 
@@ -47,4 +47,18 @@ class Order extends Model
     const STATUS_PAID = 2;
 
     const STATUS_REFUND = 3;
+
+    public $dates = [
+        'paid_at',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
 }

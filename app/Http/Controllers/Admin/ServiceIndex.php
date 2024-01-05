@@ -13,7 +13,6 @@ class ServiceIndex extends Controller
 
         $data = $paginator->items();
 
-
         $meta = [
             'page' => $paginator->currentPage(),
             'total' => $paginator->total(),

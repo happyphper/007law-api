@@ -34,18 +34,20 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Service extends Model
 {
-    use HasFactory;
+    use HasFactory, SerializeDate;
 
     protected $guarded = ['id'];
 
     const TYPE_CHAT = 1;
     const TYPE_IP = 2;
+    const TYPE_OTHER = 3;
 
-    public static function types()
+    public static function types(): array
     {
         return [
             self::TYPE_CHAT => '智能咨询',
             self::TYPE_IP => '短视频IP打造',
+            self::TYPE_OTHER => '其他服务',
         ];
     }
 

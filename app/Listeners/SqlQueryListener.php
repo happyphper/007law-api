@@ -2,9 +2,6 @@
 
 namespace App\Listeners;
 
-use Exception;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
 class SqlQueryListener
@@ -38,7 +35,7 @@ class SqlQueryListener
             $query = vsprintf(str_replace('?', '\'%s\'', $sql), $bindings);
         }
 
-        $line = vsprintf("%s(ms) [%s] %s", [str_pad($time, 5, '0'), request()->path(), $query]);
+        $line = vsprintf("%s(ms) [<%s>%s] %s", [str_pad($time, 5, '0'), request()->method(), request()->path(), $query]);
         if (request()->path() === "/") {
             $time = is_int($time) ? $time . '.0' : $time;
             $line = sprintf("%s(ms) %s", str_pad($time, 5, '0'), $query);

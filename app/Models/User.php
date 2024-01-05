@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Sanctum\Sanctum;
 
 /**
  * App\Models\User
@@ -115,7 +116,7 @@ class User extends Authenticatable
 
     public function serializeDate(DateTimeInterface $date): string
     {
-        return $date->format('Y-m-d');
+        return $date->format('Y-m-d H:i:s');
     }
 
     protected function avatar(): Attribute
@@ -123,5 +124,10 @@ class User extends Authenticatable
         return Attribute::make(
             get: fn(string $value) => str_contains($value, 'http') ? $value : config('app.url') . \Storage::disk('local')->url($value),
         );
+    }
+
+    public function token()
+    {
+        return $this->morphOne(Sanctum::$personalAccessTokenModel, 'tokenable')->latest('updated_at');
     }
 }

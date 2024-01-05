@@ -10,7 +10,9 @@ class OrderIndex extends Controller
 {
     public function __invoke(Request $request): \Illuminate\Http\JsonResponse
     {
-        $paginator = Order::orderByDesc('id')->paginate();
+        $paginator = Order::with(['user', 'service'])
+            ->orderByDesc('id')
+            ->paginate();
 
         $data = $paginator->items();
 
